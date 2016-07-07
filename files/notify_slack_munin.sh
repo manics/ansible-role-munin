@@ -16,7 +16,7 @@
 
 
 SLACK_CHANNEL="#insert-your-channel"
-SLACK_WEBHOOK_URL="https://hooks.slack.com/services/insert/your/hookURL"
+SLACK_TOKEN="xoxp-SLACK-TOKEN"
 SLACK_USERNAME="munin"
 SLACK_ICON_EMOJI=":munin:"
 
@@ -48,8 +48,14 @@ else
     COLOR="#CCCCCC"
 fi
 
-# Generate the JSON payload
-PAYLOAD="{\"channel\": \"${SLACK_CHANNEL}\", \"username\": \"${SLACK_USERNAME}\", \"icon_emoji\": \"${SLACK_ICON_EMOJI}\", \"attachments\": [{\"color\": \"${COLOR}\", \"fallback\": \"Munin alert - ${MUNIN_SERVICESTATE}: ${MUNIN_SERVICE} on ${MUNIN_HOST}\", \"pretext\": \"${ICON} Munin alert - ${MUNIN_SERVICESTATE}: ${MUNIN_SERVICE} on ${MUNIN_HOST} in ${MUNIN_GROUP} - <http://central/munin/|View Munin>\", \"fields\": [{\"title\": \"Severity\", \"value\": \"${MUNIN_SERVICESTATE}\", \"short\": \"true\"}, {\"title\": \"Service\", \"value\": \"${MUNIN_SERVICE}\", \"short\": \"true\"}, {\"title\": \"Host\", \"value\": \"${MUNIN_HOST}\", \"short\": \"true\"}, {\"title\": \"Current Values\", \"value\": \"${input}\", \"short\": \"false\"}]}]}"
+# Generate the JSON attachment
+ATTACHMENT="{\"color\": \"${COLOR}\", \"fallback\": \"Munin alert - ${MUNIN_SERVICESTATE}: ${MUNIN_SERVICE} on ${MUNIN_HOST}\", \"pretext\": \"${ICON} Munin alert - ${MUNIN_SERVICESTATE}: ${MUNIN_SERVICE} on ${MUNIN_HOST} in ${MUNIN_GROUP} - <http://central/munin/|View Munin>\", \"fields\": [{\"title\": \"Severity\", \"value\": \"${MUNIN_SERVICESTATE}\", \"short\": \"true\"}, {\"title\": \"Service\", \"value\": \"${MUNIN_SERVICE}\", \"short\": \"true\"}, {\"title\": \"Host\", \"value\": \"${MUNIN_HOST}\", \"short\": \"true\"}, {\"title\": \"Current Values\", \"value\": \"${input}\", \"short\": \"false\"}]}"
 
 #Send message to Slack
-curl -sX POST -o /dev/null --data "payload=${PAYLOAD}" $SLACK_WEBHOOK_URL 2>&1
+curl -s -o /dev/null \
+    --data-urlencode "token=$SLACK_TOKEN" \
+    --data-urlencode "channel=$SLACK_CHANNEL" \
+    --data-urlencode "text=@here: Munin notification" \
+    --data-urlencode "parse=full" \
+    --data-urlencode "attachments=[$ATTACHMENT]" \
+    https://slack.com/api/chat.postMessage 2>&1
