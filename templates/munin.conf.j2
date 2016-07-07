@@ -85,7 +85,7 @@ contact.{{ contact.name }}.always_send {{ contact.level }}
 
 {% if munin_slack_token %}
 # Need to escape the '#' in SLACK_CHANNEL otherwise munin fails to run the script
-contact.slack.command SLACK_TOKEN="{{ munin_slack_token }}" SLACK_CHANNEL="\{{ munin_slack_channel }}" SLACK_NOTIFICATION="{{ munin_slack_alert | quote }}" MUNIN_SERVICESTATE="${var:worst}" MUNIN_HOST="${var:host}" MUNIN_SERVICE="${var:graph_title}" MUNIN_GROUP=${var:group} /usr/local/bin/notify_slack_munin.sh
+contact.slack.command SLACK_TOKEN="{{ munin_slack_token }}" SLACK_CHANNEL="\{{ munin_slack_channel }}" SLACK_NOTIFICATION="{{ munin_slack_alert }}" SLACK_MUNIN_URL="{{ munin_slack_url }}" MUNIN_SERVICESTATE="${var:worst}" MUNIN_HOST="${var:host}" MUNIN_SERVICE="${var:graph_title}" MUNIN_GROUP=${var:group} /usr/local/bin/notify_slack_munin.sh
 {% if munin_slack_always_alert %}
 # This will notify on every check instead of just the first time
 contact.slack.always_send warning critical

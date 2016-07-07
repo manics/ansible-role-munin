@@ -53,4 +53,6 @@ munin_slack_channel: "#general"
 # True: Alert on every check False: alert once
 munin_slack_always_alert: False
 # Text used to prefix notifications (not parsed)
-munin_slack_alert: "<!here> munin alert"
+munin_slack_alert: "<!here>"
+# URL in notification
+munin_slack_url: ""

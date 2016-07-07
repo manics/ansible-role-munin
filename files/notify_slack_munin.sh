@@ -22,7 +22,8 @@ fi
 SLACK_CHANNEL="${SLACK_CHANNEL:-#general}"
 SLACK_USERNAME="${SLACK_USERNAME:-munin}"
 SLACK_ICON_EMOJI="${SLACK_ICON_EMOJI:-:computer:}"
-SLACK_NOTIFICATION="${SLACK_NOTIFICATION:-Munin notification}"
+SLACK_NOTIFICATION="${SLACK_NOTIFICATION:-}"
+SLACK_MUNIN_URL="${SLACK_MUNIN_URL:-http://localhost/munin/problems.html}"
 
 input=`cat`
 
@@ -53,13 +54,12 @@ else
 fi
 
 # Generate the JSON attachment
-ATTACHMENT="{\"color\": \"${COLOR}\", \"fallback\": \"Munin alert - ${MUNIN_SERVICESTATE}: ${MUNIN_SERVICE} on ${MUNIN_HOST}\", \"pretext\": \"${ICON} Munin alert - ${MUNIN_SERVICESTATE}: ${MUNIN_SERVICE} on ${MUNIN_HOST} in ${MUNIN_GROUP} - <http://central/munin/|View Munin>\", \"fields\": [{\"title\": \"Severity\", \"value\": \"${MUNIN_SERVICESTATE}\", \"short\": \"true\"}, {\"title\": \"Service\", \"value\": \"${MUNIN_SERVICE}\", \"short\": \"true\"}, {\"title\": \"Host\", \"value\": \"${MUNIN_HOST}\", \"short\": \"true\"}, {\"title\": \"Current Values\", \"value\": \"${input}\", \"short\": \"false\"}]}"
+ATTACHMENT="{\"color\": \"${COLOR}\", \"fallback\": \"Munin alert - ${MUNIN_SERVICESTATE}: ${MUNIN_SERVICE} on ${MUNIN_HOST}\", \"pretext\": \"${ICON} Munin alert ${SLACK_NOTIFICATION} - ${MUNIN_SERVICESTATE}: ${MUNIN_SERVICE} on ${MUNIN_HOST} in ${MUNIN_GROUP} - <${SLACK_MUNIN_URL}|View Munin>\", \"fields\": [{\"title\": \"Severity\", \"value\": \"${MUNIN_SERVICESTATE}\", \"short\": \"true\"}, {\"title\": \"Service\", \"value\": \"${MUNIN_SERVICE}\", \"short\": \"true\"}, {\"title\": \"Host\", \"value\": \"${MUNIN_HOST}\", \"short\": \"true\"}, {\"title\": \"Current Values\", \"value\": \"${input}\", \"short\": \"false\"}]}"
 
 # Send message to Slack
 # --data-urlencode "parse=full" \
 curl -s -o /dev/null \
     --data-urlencode "token=$SLACK_TOKEN" \
     --data-urlencode "channel=$SLACK_CHANNEL" \
-    --data-urlencode "text=@here: <!here> Munin notification" \
     --data-urlencode "attachments=[$ATTACHMENT]" \
     https://slack.com/api/chat.postMessage 2>&1
