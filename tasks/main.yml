@@ -3,16 +3,19 @@
   include_vars: "{{ ansible_os_family }}.yml"
 
 - name: Install required packages for munin (RedHat).
+  become: yes
   yum: "name={{ item }} state=present"
   with_items: "{{ munin_packages }}"
   when: ansible_os_family == 'RedHat'
 
 - name: Install required packages for munin (Debian).
+  become: yes
   apt: "name={{ item }} state=present"
   with_items: "{{ munin_packages }}"
   when: ansible_os_family == 'Debian'
 
 - name: Copy munin configurations.
+  become: yes
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
@@ -26,6 +29,7 @@
       dest: "{{ munin_conf_d_directory }}/hosts.conf"
 
 - name: Create munin user via htpasswd.
+  become: yes
   htpasswd:
     create: yes
     name: "{{ munin_admin_user }}"
@@ -42,6 +46,7 @@
   when: munin_slack_token
 
 - name: Enable or disable the munin cron job.
+  become: yes
   lineinfile:
     dest: /etc/cron.d/munin
     state: "{{ munin_cron_job }}"
