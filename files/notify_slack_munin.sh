@@ -8,17 +8,21 @@
 # 2) Edit the configuration variables that start with "SLACK_" below
 # 3) Add the following to your munin configuration:
 #
-# # -- Slack contact configuration 
+# # -- Slack contact configuration
 # contact.slack.command MUNIN_SERVICESTATE="${var:worst}" MUNIN_HOST="${var:host}" MUNIN_SERVICE="${var:graph_title}" MUNIN_GROUP=${var:group} /usr/local/bin/notify_slack_munin
 # contact.slack.always_send warning critical
 # # note: This has to be on one line for munin to parse properly
 # contact.slack.text ${if:cfields \u000A* CRITICALs:${loop<,>:cfields  ${var:label} is ${var:value} (outside range [${var:crange}])${if:extinfo : ${var:extinfo}}}.}${if:wfields \u000A* WARNINGs:${loop<,>:wfields  ${var:label} is ${var:value} (outside range [${var:wrange}])${if:extinfo : ${var:extinfo}}}.}${if:ufields \u000A* UNKNOWNs:${loop<,>:ufields  ${var:label} is ${var:value}${if:extinfo : ${var:extinfo}}}.}${if:fofields \u000A* OKs:${loop<,>:fofields  ${var:label} is ${var:value}${if:extinfo : ${var:extinfo}}}.}
 
 
-SLACK_CHANNEL="#insert-your-channel"
-SLACK_TOKEN="xoxp-SLACK-TOKEN"
-SLACK_USERNAME="munin"
-SLACK_ICON_EMOJI=":munin:"
+if [ -z "$SLACK_TOKEN" ]; then
+    echo "SLACK_TOKEN required"
+    exit 2
+fi
+SLACK_CHANNEL="${SLACK_CHANNEL:-#general}"
+SLACK_USERNAME="${SLACK_USERNAME:-munin}"
+SLACK_ICON_EMOJI="${SLACK_ICON_EMOJI:-:computer:}"
+SLACK_NOTIFICATION="${SLACK_NOTIFICATION:-Munin notification}"
 
 input=`cat`
 
@@ -51,11 +55,11 @@ fi
 # Generate the JSON attachment
 ATTACHMENT="{\"color\": \"${COLOR}\", \"fallback\": \"Munin alert - ${MUNIN_SERVICESTATE}: ${MUNIN_SERVICE} on ${MUNIN_HOST}\", \"pretext\": \"${ICON} Munin alert - ${MUNIN_SERVICESTATE}: ${MUNIN_SERVICE} on ${MUNIN_HOST} in ${MUNIN_GROUP} - <http://central/munin/|View Munin>\", \"fields\": [{\"title\": \"Severity\", \"value\": \"${MUNIN_SERVICESTATE}\", \"short\": \"true\"}, {\"title\": \"Service\", \"value\": \"${MUNIN_SERVICE}\", \"short\": \"true\"}, {\"title\": \"Host\", \"value\": \"${MUNIN_HOST}\", \"short\": \"true\"}, {\"title\": \"Current Values\", \"value\": \"${input}\", \"short\": \"false\"}]}"
 
-#Send message to Slack
+# Send message to Slack
+# --data-urlencode "parse=full" \
 curl -s -o /dev/null \
     --data-urlencode "token=$SLACK_TOKEN" \
     --data-urlencode "channel=$SLACK_CHANNEL" \
-    --data-urlencode "text=@here: Munin notification" \
-    --data-urlencode "parse=full" \
+    --data-urlencode "text=@here: <!here> Munin notification" \
     --data-urlencode "attachments=[$ATTACHMENT]" \
     https://slack.com/api/chat.postMessage 2>&1

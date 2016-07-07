@@ -43,3 +43,14 @@ munin_alerts: []
 #    subject: "Munin-notification for ${var:group} :: ${var:host}",
 #    level: "warning critical"
 #   }
+
+# Slack configuration
+
+# Slack token, if set slack notifications will be enabled
+munin_slack_token:
+# Channel for slack notifications
+munin_slack_channel: "#general"
+# True: Alert on every check False: alert once
+munin_slack_always_alert: False
+# Text used to prefix notifications (not parsed)
+munin_slack_alert: "<!here> munin alert"

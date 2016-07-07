@@ -33,6 +33,14 @@
     path: /etc/munin/munin-htpasswd
     state: present
 
+- name: Copy munin slack script
+  become: yes
+  copy:
+    dest: /usr/local/bin/notify_slack_munin.sh
+    src: files/notify_slack_munin.sh
+    mode: 0555
+  when: munin_slack_token
+
 - name: Enable or disable the munin cron job.
   lineinfile:
     dest: /etc/cron.d/munin
