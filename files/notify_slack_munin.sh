@@ -30,7 +30,7 @@ input=`cat`
 #Set the message icon based on service state
 if [ "$MUNIN_SERVICESTATE" = "CRITICAL" ]
 then
-    ICON=":exclamation:"
+    ICON=":radioactive_sign:"
     COLOR="danger"
 elif [ "$MUNIN_SERVICESTATE" = "WARNING" ]
 then
