@@ -61,5 +61,7 @@ ATTACHMENT="{\"color\": \"${COLOR}\", \"fallback\": \"Munin alert - ${MUNIN_SERV
 curl -s -o /dev/null \
     --data-urlencode "token=$SLACK_TOKEN" \
     --data-urlencode "channel=$SLACK_CHANNEL" \
+    --data-urlencode "username=$SLACK_USERNAME" \
+    --data-urlencode "icon_emoji=$SLACK_ICON_EMOJI" \
     --data-urlencode "attachments=[$ATTACHMENT]" \
     https://slack.com/api/chat.postMessage 2>&1

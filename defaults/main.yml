@@ -50,6 +50,10 @@ munin_alerts: []
 munin_slack_token:
 # Channel for slack notifications
 munin_slack_channel: "#general"
+# Display username for slack notifications
+munin_slack_username: ""
+# Display emoji icon for slack notifications
+munin_slack_emoji: ""
 # True: Alert on every check False: alert once
 munin_slack_always_alert: False
 # Text used to prefix notifications (not parsed)
