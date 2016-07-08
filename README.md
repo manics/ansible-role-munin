@@ -6,7 +6,7 @@ Installs munin, a monitoring system, on RedHat/CentOS or Debian/Ubuntu Linux ser
 
 ## Requirements
 
-If you are running a RedHat-based distribution, you need to install the EPEL repository, which can be simply installed via the `geerlingguy.repo-epel` role.
+If you are running a RedHat-based distribution, you need to install the EPEL repository.
 
 If you would like to view munin's graphs and output via HTTP, you will need an HTTP server like Apache or Nginx running.
 
@@ -61,15 +61,43 @@ You can enable mail alerts by adding :
         level: "warning critical"
       }
 
+You can enable Slack alerts by adding
+
+    munin_slack_token: xoxp-SLACK-TOKEN
+
+Slack alerts can optionally be customised with the following variables:
+
+    munin_slack_channel: "#munin-alerts"
+    munin_slack_username: "Munin Alert Bot"
+    munin_slack_emoji: ":munin:"
+    munin_slack_always_alert: True
+    munin_slack_alert: "ALERT <!here>"
+    munin_slack_url: "http://localhost/munin/"
+
+
 ## Dependencies
 
 None.
 
 ## Example Playbook
 
+    # Simple example
     - hosts: servers
       roles:
-        - geerlingguy.munin
+      - munin
+
+    # Slack notifications, multiple monitored servers
+    - hosts: servers
+      roles:
+      - munin
+        munin_slack_token: xoxp-SLACK-TOKEN
+        munin_slack_channel: "#alerts"
+        munin_hosts:
+        - name: server-2
+          address: 192.168.0.2
+        - name: server-3
+          address: 192.168.0.3
+
 
 ## License
 
