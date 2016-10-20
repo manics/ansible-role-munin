@@ -83,7 +83,7 @@ contact.{{ contact.name }}.always_send {{ contact.level }}
 {% endfor %}
 {% endif %}
 
-{% if munin_slack_token %}
+{% if munin_slack_token | length > 0 %}
 # Need to escape the '#' in SLACK_CHANNEL otherwise munin fails to run the script
 contact.slack.command \
     SLACK_TOKEN="{{ munin_slack_token }}" \

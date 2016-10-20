@@ -47,7 +47,7 @@ munin_alerts: []
 # Slack configuration
 
 # Slack token, if set slack notifications will be enabled
-munin_slack_token:
+munin_slack_token: ""
 # Channel for slack notifications
 munin_slack_channel: "#general"
 # Display username for slack notifications

@@ -43,7 +43,7 @@
     dest: /usr/local/bin/notify_slack_munin.sh
     src: files/notify_slack_munin.sh
     mode: 0555
-  when: munin_slack_token
+  when: "munin_slack_token | length > 0"
 
 - name: Enable or disable the munin cron job.
   become: yes
