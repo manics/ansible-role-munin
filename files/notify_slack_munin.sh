@@ -27,34 +27,44 @@ SLACK_MUNIN_URL="${SLACK_MUNIN_URL:-http://localhost/munin/problems.html}"
 
 input=`cat`
 
-#Set the message icon based on service state
+# Convert to UPPERCASE (^^), set alerts based on service state
+MUNIN_SERVICESTATE="${MUNIN_SERVICESTATE^^}"
 if [ "$MUNIN_SERVICESTATE" = "CRITICAL" ]
 then
     ICON=":radioactive_sign:"
     COLOR="danger"
+    MENTION="<!channel>"
 elif [ "$MUNIN_SERVICESTATE" = "WARNING" ]
 then
     ICON=":warning:"
     COLOR="warning"
-elif [ "$MUNIN_SERVICESTATE" = "ok" ]
-then
-    ICON=":white_check_mark:"
-    COLOR="good"
+    MENTION="<!here>"
 elif [ "$MUNIN_SERVICESTATE" = "OK" ]
 then
     ICON=":white_check_mark:"
     COLOR="good"
+    MENTION=""
 elif [ "$MUNIN_SERVICESTATE" = "UNKNOWN" ]
 then
     ICON=":question:"
     COLOR="#00CCCC"
+    MENTION=""
 else
     ICON=":white_medium_square:"
     COLOR="#CCCCCC"
+    MENTION=""
 fi
 
 # Generate the JSON attachment
-ATTACHMENT="{\"color\": \"${COLOR}\", \"fallback\": \"Munin alert - ${MUNIN_SERVICESTATE}: ${MUNIN_SERVICE} on ${MUNIN_HOST}\", \"pretext\": \"${ICON} Munin alert ${SLACK_NOTIFICATION} - ${MUNIN_SERVICESTATE}: ${MUNIN_SERVICE} on ${MUNIN_HOST} in ${MUNIN_GROUP} - <${SLACK_MUNIN_URL}|View Munin>\", \"fields\": [{\"title\": \"Severity\", \"value\": \"${MUNIN_SERVICESTATE}\", \"short\": \"true\"}, {\"title\": \"Service\", \"value\": \"${MUNIN_SERVICE}\", \"short\": \"true\"}, {\"title\": \"Host\", \"value\": \"${MUNIN_HOST}\", \"short\": \"true\"}, {\"title\": \"Current Values\", \"value\": \"${input}\", \"short\": \"false\"}]}"
+ATTACHMENT="{
+\"color\": \"${COLOR}\",
+\"fallback\": \"${SLACK_NOTIFICATION} ${MENTION} - ${MUNIN_SERVICESTATE}: ${MUNIN_SERVICE} on ${MUNIN_HOST}\",
+\"pretext\": \"${ICON} ${SLACK_NOTIFICATION} ${MENTION} - ${MUNIN_SERVICESTATE}: ${MUNIN_SERVICE} on ${MUNIN_HOST} in ${MUNIN_GROUP} - <${SLACK_MUNIN_URL}|View Munin>\",
+\"fields\": [
+{\"title\": \"Severity\", \"value\": \"${MUNIN_SERVICESTATE}\", \"short\": \"true\"},
+{\"title\": \"Service\", \"value\": \"${MUNIN_SERVICE}\", \"short\": \"true\"}, {\"title\": \"Host\", \"value\": \"${MUNIN_HOST}\", \"short\": \"true\"},
+{\"title\": \"Current Values\", \"value\": \"${input}\", \"short\": \"false\"}
+]}"
 
 # Send message to Slack
 # --data-urlencode "parse=full" \

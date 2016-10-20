@@ -57,6 +57,6 @@ munin_slack_emoji: ""
 # True: Alert on every check False: alert once
 munin_slack_always_alert: False
 # Text used to prefix notifications (not parsed)
-munin_slack_alert: "<!here>"
+munin_slack_alert: "Munin alert"
 # URL in notification
 munin_slack_url: ""
