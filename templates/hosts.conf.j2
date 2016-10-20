@@ -12,7 +12,7 @@
 {% for group in (munin_openstack_groups | default([])) %}
 # Openstack {{ group }}
 {%   for host in groups[group] %}
-[{{ hostvars[host].openstack.name | default(host) }}]
+[{{group}};{{ hostvars[host].openstack.name | default(host) }}]
     address {{ hostvars[host].ansible_host | default(hostvars[host].ansible_ssh_host) }}
     use_node_name yes
 {%   endfor %}
